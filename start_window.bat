@@ -9,13 +9,13 @@ echo .
 echo 启动consul容器...
 docker-compose up -d
 
-echo .
-echo 等待5秒consul初始化结束...
-timeout /t 5
+@REM echo .
+@REM echo 等待5秒consul初始化结束...
+@REM timeout /t 5
 
-echo .
-echo 导入服务配置...
-curl.exe --request PUT --data "@StartSceneConfig.txt" http://localhost:8500/v1/kv/service_config
+@REM echo .
+@REM echo 导入服务配置...
+@REM curl.exe --request PUT --data "@StartSceneConfig.txt" http://localhost:8500/v1/kv/service_config
 
 echo .
 echo success...
