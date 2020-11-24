@@ -1,7 +1,9 @@
 [
-[1, {"_id":1,"Process":1,"Zone":1,"SceneType":"Realm","Name":"Realm","OuterPort":10002}],
+[1, {"_id":1,"Process":1,"Zone":1,"SceneType":"Realm","Name":"Realm","OuterPort":10002,"Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
 [2, {"_id":2,"Process":1,"Zone":1,"SceneType":"Gate","Name":"Gate1","OuterPort":10003,"Slot":"0,0,0,0xffffffff,0xffffffff"}],
 [3, {"_id":3,"Process":1,"Zone":1,"SceneType":"Gate","Name":"Gate2","OuterPort":10004,"Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
-[4, {"_id":4,"Process":1,"Zone":1,"SceneType":"Location","Name":"Location"}],
-[5, {"_id":5,"Process":1,"Zone":1,"SceneType":"Map","Name":"Map"}],
+[4, {"_id":4,"Process":1,"Zone":1,"SceneType":"Location","Name":"Location","Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
+[5, {"_id":5,"Process":1,"Zone":1,"SceneType":"Player","Name":"Player","Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
+[6, {"_id":6,"Process":1,"Zone":1,"SceneType":"Social","Name":"Social1","Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
+[7, {"_id":7,"Process":1,"Zone":1,"SceneType":"Social","Name":"Social2","Slot":"0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff"}],
 ]
