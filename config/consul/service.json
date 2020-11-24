@@ -11,6 +11,8 @@
           "name": "HTTP API on port 80",
           "http": "http://192.168.1.137:80/health_check",
           "method": "GET",
+          "header": {"Content-Type": ["application/json"]},
+          "body": "{\"service_id\":\"Gate1\"}",
           "interval": "10s",
           "timeout": "3s"
         }
@@ -20,13 +22,51 @@
         "id": "Gate2",
         "name": "Gate",
         "tags": ["Gate"],
-        "address": "192.168.1.138",
+        "address": "192.168.2.65",
         "port": 80,
         "check": {
           "id": "http_check_gate2",
           "name": "HTTP API on port 80",
-          "http": "http://192.168.1.138:80/health_check",
+          "http": "http://192.168.2.65:80/health_check",
           "method": "GET",
+          "header": {"Content-Type": ["application/json"]},
+          "body": "{\"service_id\":\"Gate2\"}",
+          "interval": "10s",
+          "timeout": "3s"
+        }
+    },
+
+    {
+        "id": "Social1",
+        "name": "Social",
+        "tags": ["Social"],
+        "address": "192.168.1.137",
+        "port": 80,
+        "check": {
+          "id": "http_check_social1",
+          "name": "HTTP API on port 80",
+          "http": "http://192.168.1.137:80/health_check",
+          "method": "GET",
+          "header": {"Content-Type": ["application/json"]},
+          "body": "{\"service_id\":\"Social1\"}",
+          "interval": "10s",
+          "timeout": "3s"
+        }
+    },
+
+    {
+        "id": "Social2",
+        "name": "Social",
+        "tags": ["Social"],
+        "address": "192.168.2.65",
+        "port": 80,
+        "check": {
+          "id": "http_check_social2",
+          "name": "HTTP API on port 80",
+          "http": "http://192.168.2.65:80/health_check",
+          "method": "GET",
+          "header": {"Content-Type": ["application/json"]},
+          "body": "{\"service_id\":\"Social2\"}",
           "interval": "10s",
           "timeout": "3s"
         }
@@ -47,9 +87,21 @@
     },
 
     {
+        "type": "key",
+        "key": "service_config",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://192.168.2.65:80/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    },
+
+    {
         "type": "service",
-        "service": "Gate",
-        "passingonly": true,
+        "service": "Social",
+        "passingonly": false,
         "handler_type": "http",
         "http_handler_config": {
             "path": "http://192.168.1.137:80/watch_service",
@@ -57,7 +109,45 @@
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    }
+    },
 
+    {
+        "type": "service",
+        "service": "Social",
+        "passingonly": false,
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://192.168.2.65:80/watch_service",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    },
+
+    {
+        "type": "service",
+        "service": "Gate",
+        "passingonly": false,
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://192.168.1.137:80/watch_service",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    },
+
+    {
+        "type": "service",
+        "service": "Gate",
+        "passingonly": false,
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://192.168.2.65:80/watch_service",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }
   ]
 }
