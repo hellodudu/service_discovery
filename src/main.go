@@ -40,5 +40,5 @@ func main() {
 
 	// generate consul's service.json
 	ce := NewConsulExporter()
-	ce.WriteServicesToFile(cm.mapCombinedService, "../config/consul/service_gen.json")
+	ce.WriteServicesToFile(cm.mapCombinedService, "../config/consul/service.json")
 }

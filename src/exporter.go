@@ -10,12 +10,14 @@ import (
 )
 
 type ConsulServiceCheckEntry struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Http     string `json:"http"`
-	Method   string `json:"method"`
-	Interval string `json:"interval"`
-	Timeout  string `json:"timeout"`
+	ID       string                 `json:"id"`
+	Name     string                 `json:"name"`
+	Http     string                 `json:"http"`
+	Method   string                 `json:"method"`
+	Header   map[string]interface{} `json:"header"`
+	Body     string                 `json:"body"`
+	Interval string                 `json:"interval"`
+	Timeout  string                 `json:"timeout"`
 }
 
 // service.json single service
@@ -84,12 +86,42 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 			Name:   fmt.Sprintf("http_check_%s", config.SceneType),
 			Http:   fmt.Sprintf("http://%s:%s/%s", config.InnerIP, config.InnerPort, "health_check"),
 			Method: "GET",
+			Header: map[string]interface{}{
+				"Content-Type": []string{"application/json"},
+			},
+			Body:     fmt.Sprintf("{\"service_id\":\"%s\"}", config.Name),
+			Interval: "10s",
+			Timeout:  "3s",
 		}
 
-		watch := &ConsulWatchEntry{}
+		watchKey := &ConsulWatchEntry{
+			Type:        "key",
+			Key:         "service_config",
+			HandlerType: "http",
+			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
+				Path:          fmt.Sprintf("http://%s:%s/watch_key", config.InnerIP, config.InnerPort),
+				Method:        "GET",
+				Timeout:       "10s",
+				TlsSkipVerify: false,
+			},
+		}
+
+		watchService := &ConsulWatchEntry{
+			Type:        "service",
+			Service:     config.SceneType,
+			PassingOnly: false,
+			HandlerType: "http",
+			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
+				Path:          fmt.Sprintf("http://%s:%s/watch_key", config.InnerIP, config.InnerPort),
+				Method:        "GET",
+				Timeout:       "10s",
+				TlsSkipVerify: false,
+			},
+		}
 
 		ce.cse.Services = append(ce.cse.Services, service)
-		ce.cse.Watches = append(ce.cse.Watches, watch)
+		ce.cse.Watches = append(ce.cse.Watches, watchKey)
+		ce.cse.Watches = append(ce.cse.Watches, watchService)
 	}
 
 	data, err := json.Marshal(ce.cse)

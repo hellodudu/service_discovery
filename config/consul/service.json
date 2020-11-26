@@ -1,153 +1,270 @@
 {
-    "services": [
-    {
-        "id": "Gate1",
-        "name": "Gate",
-        "tags": ["Gate"],
-        "address": "192.168.1.137",
-        "port": 80,
-        "check": {
-          "id": "http_check_gate1",
-          "name": "HTTP API on port 80",
-          "http": "http://192.168.1.137:80/health_check",
-          "method": "GET",
-          "header": {"Content-Type": ["application/json"]},
-          "body": "{\"service_id\":\"Gate1\"}",
-          "interval": "10s",
-          "timeout": "3s"
-        }
-    },
-
-    {
-        "id": "Gate2",
-        "name": "Gate",
-        "tags": ["Gate"],
-        "address": "192.168.2.65",
-        "port": 80,
-        "check": {
-          "id": "http_check_gate2",
-          "name": "HTTP API on port 80",
-          "http": "http://192.168.2.65:80/health_check",
-          "method": "GET",
-          "header": {"Content-Type": ["application/json"]},
-          "body": "{\"service_id\":\"Gate2\"}",
-          "interval": "10s",
-          "timeout": "3s"
-        }
-    },
-
-    {
-        "id": "Social1",
-        "name": "Social",
-        "tags": ["Social"],
-        "address": "192.168.1.137",
-        "port": 80,
-        "check": {
-          "id": "http_check_social1",
-          "name": "HTTP API on port 80",
-          "http": "http://192.168.1.137:80/health_check",
-          "method": "GET",
-          "header": {"Content-Type": ["application/json"]},
-          "body": "{\"service_id\":\"Social1\"}",
-          "interval": "10s",
-          "timeout": "3s"
-        }
-    },
-
-    {
+    "services": [{
         "id": "Social2",
         "name": "Social",
         "tags": ["Social"],
-        "address": "192.168.2.65",
-        "port": 80,
+        "address": "127.0.0.1",
+        "port": 20001,
         "check": {
-          "id": "http_check_social2",
-          "name": "HTTP API on port 80",
-          "http": "http://192.168.2.65:80/health_check",
-          "method": "GET",
-          "header": {"Content-Type": ["application/json"]},
-          "body": "{\"service_id\":\"Social2\"}",
-          "interval": "10s",
-          "timeout": "3s"
+            "id": "http_check_Social2",
+            "name": "http_check_Social",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Social2\"}",
+            "interval": "10s",
+            "timeout": "3s"
         }
-    }
-    ],
-
-    "watches": [
-    {
+    }, {
+        "id": "Realm",
+        "name": "Realm",
+        "tags": ["Realm"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Realm",
+            "name": "http_check_Realm",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Realm\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }, {
+        "id": "Gate1",
+        "name": "Gate",
+        "tags": ["Gate"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Gate1",
+            "name": "http_check_Gate",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Gate1\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }, {
+        "id": "Gate2",
+        "name": "Gate",
+        "tags": ["Gate"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Gate2",
+            "name": "http_check_Gate",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Gate2\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }, {
+        "id": "Location",
+        "name": "Location",
+        "tags": ["Location"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Location",
+            "name": "http_check_Location",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Location\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }, {
+        "id": "Player",
+        "name": "Player",
+        "tags": ["Player"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Player",
+            "name": "http_check_Player",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Player\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }, {
+        "id": "Social1",
+        "name": "Social",
+        "tags": ["Social"],
+        "address": "127.0.0.1",
+        "port": 20001,
+        "check": {
+            "id": "http_check_Social1",
+            "name": "http_check_Social",
+            "http": "http://127.0.0.1:20001/health_check",
+            "method": "GET",
+            "header": {
+                "Content-Type": ["application/json"]
+            },
+            "body": "{\"service_id\":\"Social1\"}",
+            "interval": "10s",
+            "timeout": "3s"
+        }
+    }],
+    "watches": [{
         "type": "key",
         "key": "service_config",
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.1.137:80/watch_key",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    },
-
-    {
+    }, {
+        "type": "service",
+        "service": "Social",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
         "type": "key",
         "key": "service_config",
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.2.65:80/watch_key",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    },
-
-    {
+    }, {
         "type": "service",
-        "service": "Social",
-        "passingonly": false,
+        "service": "Realm",
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.1.137:80/watch_service",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    },
-
-    {
-        "type": "service",
-        "service": "Social",
-        "passingonly": false,
+    }, {
+        "type": "key",
+        "key": "service_config",
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.2.65:80/watch_service",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    },
-
-    {
+    }, {
         "type": "service",
         "service": "Gate",
-        "passingonly": false,
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.1.137:80/watch_service",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    },
-
-    {
+    }, {
+        "type": "key",
+        "key": "service_config",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
         "type": "service",
         "service": "Gate",
-        "passingonly": false,
         "handler_type": "http",
         "http_handler_config": {
-            "path": "http://192.168.2.65:80/watch_service",
+            "path": "http://127.0.0.1:20001/watch_key",
             "method": "GET",
             "timeout": "10s",
             "tls_skip_verify": false
         }
-    }
-  ]
+    }, {
+        "type": "key",
+        "key": "service_config",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
+        "type": "service",
+        "service": "Location",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
+        "type": "key",
+        "key": "service_config",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
+        "type": "service",
+        "service": "Player",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
+        "type": "key",
+        "key": "service_config",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }, {
+        "type": "service",
+        "service": "Social",
+        "handler_type": "http",
+        "http_handler_config": {
+            "path": "http://127.0.0.1:20001/watch_key",
+            "method": "GET",
+            "timeout": "10s",
+            "tls_skip_verify": false
+        }
+    }]
 }
