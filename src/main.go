@@ -28,7 +28,7 @@ func initLogger(appName string) {
 
 func main() {
 	// init log
-	initLogger("importer")
+	initLogger("consul_converter")
 
 	// load config from file
 	cm := NewConfigManager()
@@ -38,5 +38,7 @@ func main() {
 	cm.CombineService()
 	log.Info().Interface("services", cm.mapCombinedService).Msg("combine service success")
 
-	// todo generate consul's service.json
+	// generate consul's service.json
+	ce := NewConsulExporter()
+	ce.WriteServicesToFile(cm.mapCombinedService, "../config/consul/service_gen.json")
 }
