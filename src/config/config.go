@@ -1,13 +1,17 @@
-package main
+package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"reflect"
 	"strings"
 
 	"github.com/rs/zerolog/log"
 )
+
+type CombinedServices map[int32]*ServiceConfig
 
 type BaseConfig interface {
 	GetID() int32
@@ -37,9 +41,10 @@ func (c *StartProcessConfig) GetID() int32 {
 }
 
 type StartMachineConfig struct {
-	ID      int32  `json:"_id"`
-	InnerIP string `json:"InnerIP"`
-	OuterIP string `json:"OuterIP"`
+	ID       int32  `json:"_id"`
+	InnerIP  string `json:"InnerIP"`
+	OuterIP  string `json:"OuterIP"`
+	HttpPort string `json:"HttpPort"`
 }
 
 func (c *StartMachineConfig) GetID() int32 {
@@ -52,6 +57,7 @@ type ServiceConfig struct {
 	InnerIP           string `json:"InnerIP"`
 	OuterIP           string `json:"OuterIP"`
 	InnerPort         string `json:"InnerPort"`
+	HttpPort          string `json:"HttpPort"`
 }
 
 type ConfigManager struct {
@@ -59,13 +65,14 @@ type ConfigManager struct {
 	mapProcessConfig map[int32]BaseConfig
 	mapMachineConfig map[int32]BaseConfig
 
-	mapCombinedService map[int32]*ServiceConfig
+	mapCombinedService CombinedServices
 }
 
 func extractFromFile(path string, rtype reflect.Type) (values []BaseConfig, err error) {
 	data, e := ioutil.ReadFile(path)
 	if e != nil {
-		log.Error().Str("path", path).Err(e).Msg("read file failed")
+		dir, _ := os.Getwd()
+		log.Error().Str("path", path).Str("dir", dir).Err(e).Msg("read file failed")
 		err = e
 		return
 	}
@@ -111,23 +118,27 @@ func NewConfigManager() *ConfigManager {
 		mapSceneConfig:     make(map[int32]BaseConfig),
 		mapProcessConfig:   make(map[int32]BaseConfig),
 		mapMachineConfig:   make(map[int32]BaseConfig),
-		mapCombinedService: make(map[int32]*ServiceConfig),
+		mapCombinedService: make(CombinedServices),
 	}
 }
 
-func (cm *ConfigManager) LoadFromFile() {
+func (cm *ConfigManager) GetCombinedService() CombinedServices {
+	return cm.mapCombinedService
+}
+
+func (cm *ConfigManager) LoadFromFile(path string) {
 	// load config txt
-	listSceneConfigs, err := extractFromFile("../StartSceneConfig.txt", reflect.TypeOf(&StartSceneConfig{}))
+	listSceneConfigs, err := extractFromFile(fmt.Sprintf("%s/StartSceneConfig.txt", path), reflect.TypeOf(&StartSceneConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	listProcessConfigs, err := extractFromFile("../StartProcessConfig.txt", reflect.TypeOf(&StartProcessConfig{}))
+	listProcessConfigs, err := extractFromFile(fmt.Sprintf("%s/StartProcessConfig.txt", path), reflect.TypeOf(&StartProcessConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	listMachineConfigs, err := extractFromFile("../StartMachineConfig.txt", reflect.TypeOf(&StartMachineConfig{}))
+	listMachineConfigs, err := extractFromFile(fmt.Sprintf("%s/StartMachineConfig.txt", path), reflect.TypeOf(&StartMachineConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
@@ -164,6 +175,7 @@ func (cm *ConfigManager) CombineService() {
 
 		service.InnerIP = machineConfig.InnerIP
 		service.OuterIP = machineConfig.OuterIP
+		service.HttpPort = machineConfig.HttpPort
 		service.InnerPort = processConfig.InnerPort
 
 		cm.mapCombinedService[service.ID] = service

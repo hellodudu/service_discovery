@@ -1,9 +1,10 @@
-package main
+package export
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"main/src/config"
 	"strconv"
 
 	"github.com/rs/zerolog/log"
@@ -66,7 +67,7 @@ func NewConsulExporter() *ConsulExporter {
 	}
 }
 
-func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, path string) {
+func (ce *ConsulExporter) WriteServicesToFile(configs config.CombinedServices, path string) {
 	for _, config := range configs {
 		service := &ConsulServiceEntry{
 			ID:      config.Name,
@@ -76,7 +77,7 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 		}
 
 		var err error
-		service.Port, err = strconv.Atoi(config.InnerPort)
+		service.Port, err = strconv.Atoi(config.HttpPort)
 		if err != nil {
 			log.Fatal().Err(err).Msg("convert port to int failed")
 		}
@@ -84,7 +85,7 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 		service.Check = &ConsulServiceCheckEntry{
 			ID:     fmt.Sprintf("http_check_%s", config.Name),
 			Name:   fmt.Sprintf("http_check_%s", config.SceneType),
-			Http:   fmt.Sprintf("http://%s:%s/%s", config.InnerIP, config.InnerPort, "health_check"),
+			Http:   fmt.Sprintf("http://%s:%s/health_check/%s", config.InnerIP, config.HttpPort, config.SceneType),
 			Method: "GET",
 			Header: map[string]interface{}{
 				"Content-Type": []string{"application/json"},
@@ -99,7 +100,7 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 			Key:         "service_config",
 			HandlerType: "http",
 			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
-				Path:          fmt.Sprintf("http://%s:%s/watch_key", config.InnerIP, config.InnerPort),
+				Path:          fmt.Sprintf("http://%s:%s/watch_key/%s", config.InnerIP, config.HttpPort, config.SceneType),
 				Method:        "GET",
 				Timeout:       "10s",
 				TlsSkipVerify: false,
@@ -112,7 +113,7 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 			PassingOnly: false,
 			HandlerType: "http",
 			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
-				Path:          fmt.Sprintf("http://%s:%s/watch_key", config.InnerIP, config.InnerPort),
+				Path:          fmt.Sprintf("http://%s:%s/watch_service", config.InnerIP, config.HttpPort),
 				Method:        "GET",
 				Timeout:       "10s",
 				TlsSkipVerify: false,
@@ -133,6 +134,8 @@ func (ce *ConsulExporter) WriteServicesToFile(configs map[int32]*ServiceConfig, 
 	if err != nil {
 		log.Fatal().Err(err).Msg("write service.json failed")
 	}
+
+	log.Info().Str("path", path).Msg("write service.json successful")
 }
 
 // test
