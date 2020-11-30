@@ -34,6 +34,7 @@ type StartProcessConfig struct {
 	ID        int32  `json:"_id"`
 	MachineId int32  `json:"MachineId"`
 	InnerPort string `json:"InnerPort"`
+	HttpPort  string `json:"HttpPort"`
 }
 
 func (c *StartProcessConfig) GetID() int32 {
@@ -41,10 +42,9 @@ func (c *StartProcessConfig) GetID() int32 {
 }
 
 type StartMachineConfig struct {
-	ID       int32  `json:"_id"`
-	InnerIP  string `json:"InnerIP"`
-	OuterIP  string `json:"OuterIP"`
-	HttpPort string `json:"HttpPort"`
+	ID      int32  `json:"_id"`
+	InnerIP string `json:"InnerIP"`
+	OuterIP string `json:"OuterIP"`
 }
 
 func (c *StartMachineConfig) GetID() int32 {
@@ -128,17 +128,17 @@ func (cm *ConfigManager) GetCombinedService() CombinedServices {
 
 func (cm *ConfigManager) LoadFromFile(path string) {
 	// load config txt
-	listSceneConfigs, err := extractFromFile(fmt.Sprintf("%s/StartSceneConfig.txt", path), reflect.TypeOf(&StartSceneConfig{}))
+	listSceneConfigs, err := extractFromFile(fmt.Sprintf("%sStartSceneConfig.txt", path), reflect.TypeOf(&StartSceneConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	listProcessConfigs, err := extractFromFile(fmt.Sprintf("%s/StartProcessConfig.txt", path), reflect.TypeOf(&StartProcessConfig{}))
+	listProcessConfigs, err := extractFromFile(fmt.Sprintf("%sStartProcessConfig.txt", path), reflect.TypeOf(&StartProcessConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	listMachineConfigs, err := extractFromFile(fmt.Sprintf("%s/StartMachineConfig.txt", path), reflect.TypeOf(&StartMachineConfig{}))
+	listMachineConfigs, err := extractFromFile(fmt.Sprintf("%sStartMachineConfig.txt", path), reflect.TypeOf(&StartMachineConfig{}))
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
@@ -175,7 +175,7 @@ func (cm *ConfigManager) CombineService() {
 
 		service.InnerIP = machineConfig.InnerIP
 		service.OuterIP = machineConfig.OuterIP
-		service.HttpPort = machineConfig.HttpPort
+		service.HttpPort = processConfig.HttpPort
 		service.InnerPort = processConfig.InnerPort
 
 		cm.mapCombinedService[service.ID] = service

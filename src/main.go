@@ -51,6 +51,6 @@ func main() {
 
 	// generate consul's service.json
 	ce := export.NewConsulExporter()
-	destPath := fmt.Sprintf("%s/service.json", exporterPath)
+	destPath := fmt.Sprintf("%sservice.json", exporterPath)
 	ce.WriteServicesToFile(cm.GetCombinedService(), destPath)
 }

@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {},
-            "args": ["-import_path", "../config/scene", "-export_path", "../config/consul"]
+            "args": ["-import_path", "..\\config\\scene\\", "-export_path", "..\\config\\consul\\"]
         }
     ]
 }
