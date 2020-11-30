@@ -68,6 +68,9 @@ func NewConsulExporter() *ConsulExporter {
 }
 
 func (ce *ConsulExporter) WriteServicesToFile(configs config.CombinedServices, path string) {
+	mapServiceType := make(map[string]bool)
+	mapServiceAddr := make(map[string]bool)
+
 	for _, config := range configs {
 		service := &ConsulServiceEntry{
 			ID:      config.Name,
@@ -76,12 +79,16 @@ func (ce *ConsulExporter) WriteServicesToFile(configs config.CombinedServices, p
 			Address: config.InnerIP,
 		}
 
+		mapServiceType[config.SceneType] = true
+		mapServiceAddr[fmt.Sprintf("%s:%s", config.InnerIP, config.HttpPort)] = true
+
 		var err error
 		service.Port, err = strconv.Atoi(config.HttpPort)
 		if err != nil {
 			log.Fatal().Err(err).Msg("convert port to int failed")
 		}
 
+		// generate service.check
 		service.Check = &ConsulServiceCheckEntry{
 			ID:     fmt.Sprintf("http_check_%s", config.Name),
 			Name:   fmt.Sprintf("http_check_%s", config.SceneType),
@@ -90,39 +97,53 @@ func (ce *ConsulExporter) WriteServicesToFile(configs config.CombinedServices, p
 			Header: map[string]interface{}{
 				"Content-Type": []string{"application/json"},
 			},
-			Body:     fmt.Sprintf("{\"service_id\":\"%s\"}", config.Name),
+			Body:     fmt.Sprintf("{\"ServiceID\":\"%s\"}", config.Name),
 			Interval: "10s",
 			Timeout:  "3s",
 		}
 
-		watchKey := &ConsulWatchEntry{
-			Type:        "key",
-			Key:         "service_config",
-			HandlerType: "http",
-			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
-				Path:          fmt.Sprintf("http://%s:%s/watch_key/%s", config.InnerIP, config.HttpPort, config.SceneType),
-				Method:        "GET",
-				Timeout:       "10s",
-				TlsSkipVerify: false,
-			},
-		}
-
-		watchService := &ConsulWatchEntry{
-			Type:        "service",
-			Service:     config.SceneType,
-			PassingOnly: false,
-			HandlerType: "http",
-			HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
-				Path:          fmt.Sprintf("http://%s:%s/watch_service", config.InnerIP, config.HttpPort),
-				Method:        "GET",
-				Timeout:       "10s",
-				TlsSkipVerify: false,
-			},
-		}
-
 		ce.cse.Services = append(ce.cse.Services, service)
-		ce.cse.Watches = append(ce.cse.Watches, watchKey)
-		ce.cse.Watches = append(ce.cse.Watches, watchService)
+	}
+
+	// generate watch_service
+	for serviceType, okType := range mapServiceType {
+		if !okType {
+			continue
+		}
+
+		for addr, okAddr := range mapServiceAddr {
+			if !okAddr {
+				continue
+			}
+
+			// watchKey := &ConsulWatchEntry{
+			// 	Type:        "key",
+			// 	Key:         "service_config",
+			// 	HandlerType: "http",
+			// 	HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
+			// 		Path:          fmt.Sprintf("http://%s:%s/watch_key/%s", config.InnerIP, config.HttpPort, config.SceneType),
+			// 		Method:        "GET",
+			// 		Timeout:       "10s",
+			// 		TlsSkipVerify: false,
+			// 	},
+			// }
+
+			watchService := &ConsulWatchEntry{
+				Type:        "service",
+				Service:     serviceType,
+				PassingOnly: false,
+				HandlerType: "http",
+				HttpHandlerConfig: &ConsulWatchHttpHandlerConfigEntry{
+					Path:          fmt.Sprintf("http://%s/watch_service", addr),
+					Method:        "GET",
+					Timeout:       "10s",
+					TlsSkipVerify: false,
+				},
+			}
+
+			// ce.cse.Watches = append(ce.cse.Watches, watchKey)
+			ce.cse.Watches = append(ce.cse.Watches, watchService)
+		}
 	}
 
 	data, err := json.Marshal(ce.cse)
