@@ -27,7 +27,7 @@ func initLogger(appName string) {
 	// log file name
 	t := time.Now()
 	fileTime := fmt.Sprintf("%d-%d-%d %d-%d-%d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
-	logFn := fmt.Sprintf("../data/log/%s_%s.log", appName, fileTime)
+	logFn := fmt.Sprintf("./data/log/%s_%s.log", appName, fileTime)
 
 	// set console writer and file rotate writer
 	log.Logger = log.Output(io.MultiWriter(zerolog.ConsoleWriter{Out: os.Stdout}, &rotate.Logger{
